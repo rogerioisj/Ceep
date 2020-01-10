@@ -55,6 +55,6 @@ class NotaViewHolder extends RecyclerView.ViewHolder {
 
     public void vincula(Nota nota) {
         titulo.setText(nota.getTitulo());
-        descricao.setText(nota.getTitulo());
+        descricao.setText(nota.getDescricao());
     }
 }

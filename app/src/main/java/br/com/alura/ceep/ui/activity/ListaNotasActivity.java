@@ -1,6 +1,9 @@
 package br.com.alura.ceep.ui.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -21,23 +24,41 @@ public class ListaNotasActivity extends AppCompatActivity {
         setContentView(R.layout.activity_lista_notas);
         RecyclerView listaNotas = findViewById(R.id.lista_notas_recyclerview);
         NotaDAO dao = new NotaDAO();
-        for (int i = 1; i <= 10000; i++) {
-            dao.insere(new Nota("Titulo " + i, "Descrição " + i));
-        }
+        List<Nota> todasNotas = dao.todos();
 
 
-        configuraAdapter(listaNotas, dao);
+        configuraBotaoNovaNota();
+        configuraAdapter(todasNotas);
         //configuraLinearLayout(listaNotas);
 
     }
 
-    private void configuraAdapter(RecyclerView listaNotas, NotaDAO dao) {
-        List<Nota> todasNotas = dao.todos();
-        listaNotas.setAdapter(new ListaNotasAdapter(this, todasNotas));
+    @Override
+    protected void onResume() {
+        NotaDAO dao = new NotaDAO();
+        dao.todos();
+        List<Nota> todos = dao.todos();
+        configuraAdapter(todos);
+        super.onResume();
     }
 
-    /*private void configuraLinearLayout(RecyclerView listaNotas) {
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        listaNotas.setLayoutManager(layoutManager);
-    }*/
+    private void configuraBotaoNovaNota() {
+        TextView botaoInsereNota = findViewById(R.id.lista_notas_insere_nota);
+
+        botaoInsereNota.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                Intent iniciaFormularioNota = new Intent(ListaNotasActivity.this,
+                        FormularioNotaActivity.class);
+                startActivity(iniciaFormularioNota);
+            }
+        });
+    }
+
+    private void configuraAdapter(List<Nota> notas) {
+        RecyclerView listaNotas = findViewById(R.id.lista_notas_recyclerview);
+        listaNotas.setAdapter(new ListaNotasAdapter(this, notas));
+    }
+
 }
