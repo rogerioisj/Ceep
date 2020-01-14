@@ -36,11 +36,11 @@ public class FormularioNotaActivity extends AppCompatActivity {
             TextView titulo = findViewById(R.id.formulario_nota_titulo);
             TextView descricao = findViewById(R.id.formulario_nota_descricao);
             Nota notaCriada = new Nota(titulo.getText().toString(), descricao.getText().toString());
-            Intent intent = new Intent();
-            //intent.putExtra("nota", notaCriada);
-            dao.insere(notaCriada);
+            Intent resultadoInsercao = new Intent();
+            resultadoInsercao.putExtra("nota", notaCriada);
+            //dao.insere(notaCriada);
 
-            setResult(2, intent);
+            setResult(2, resultadoInsercao);
             finish();
         }
         return super.onOptionsItemSelected(item);

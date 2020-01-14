@@ -26,24 +26,25 @@ public class ListaNotasActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lista_notas);
         todasNotas = notasDeExemplo();
-        configuraRecyclerView(todasNotas);
 
-        configuraBotaoNovaNota();
+
         configuraRecyclerView(todasNotas);
+        configuraBotaoNovaNota();
+
     }
 
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (requestCode == 1 && requestCode == 2 && data.hasExtra("nota")) {
-            Nota nota = (Nota)data.getSerializableExtra("nota");
+        if (requestCode == 1 && resultCode == 2 && data.hasExtra("nota")) {
+            Nota nota = (Nota) data.getSerializableExtra("nota");
             new NotaDAO().insere(nota);
             adapter.adiciona(nota);
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    @Override
+    /*@Override
     protected void onResume() {
         NotaDAO dao = new NotaDAO();
         List<Nota> todos = dao.todos();
@@ -51,7 +52,7 @@ public class ListaNotasActivity extends AppCompatActivity {
         todasNotas.addAll(dao.todos());
         adapter.notifyDataSetChanged();
         super.onResume();
-    }
+    }*/
 
     private void configuraBotaoNovaNota() {
         TextView botaoInsereNota = findViewById(R.id.lista_notas_insere_nota);
