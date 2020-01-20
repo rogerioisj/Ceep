@@ -34,4 +34,5 @@ public class NotaDAO {
     public void removeTodos() {
         notas.clear();
     }
+
 }

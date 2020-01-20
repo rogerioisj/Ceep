@@ -18,6 +18,8 @@ import br.com.alura.ceep.model.Nota;
 import br.com.alura.ceep.recyclerview.adapter.ListaNotasAdapter;
 import br.com.alura.ceep.recyclerview.adapter.listener.OnItemClickListener;
 
+import static br.com.alura.ceep.ui.activity.ConstantesActivity.CHAVE_NOTA;
+import static br.com.alura.ceep.ui.activity.ConstantesActivity.CODIGO_REQUISICAO_EDITA_NOTA;
 import static br.com.alura.ceep.ui.activity.ConstantesActivity.CODIGO_REQUISICAO_INSERE_NOTA;
 import static br.com.alura.ceep.ui.activity.ConstantesActivity.CODIGO_RESULTADO_NOTA_CRIADA;
 
@@ -42,6 +44,16 @@ public class ListaNotasActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         verificaNotaDeFormulario(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == CODIGO_REQUISICAO_EDITA_NOTA
+                && resultCode == CODIGO_RESULTADO_NOTA_CRIADA
+                && validaSerializableInsereNota(data)
+                && data.hasExtra("posicao")){
+            Nota notaRecebida = (Nota) data.getSerializableExtra(CHAVE_NOTA);
+            int posicaoRecebida = data.getIntExtra("posicao", -1);
+            new NotaDAO().altera(posicaoRecebida, notaRecebida);
+            adapter.altera(posicaoRecebida, notaRecebida);
+        }
     }
 
     private void verificaNotaDeFormulario(int requestCode, int resultCode, @Nullable Intent data) {
@@ -91,15 +103,18 @@ public class ListaNotasActivity extends AppCompatActivity {
         listaNotas.setAdapter(adapter);
         adapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
-            public void onItemClick(Nota nota) {
-                Toast.makeText(ListaNotasActivity.this, "Clicado em " + nota.getTitulo(), Toast.LENGTH_SHORT).show();
+            public void onItemClick(Nota nota, int posicao) {
+                Intent abreFormularioComNota = new Intent(ListaNotasActivity.this, FormularioNotaActivity.class);
+                abreFormularioComNota.putExtra(CHAVE_NOTA, nota);
+                abreFormularioComNota.putExtra("posicao", posicao);
+                startActivityForResult(abreFormularioComNota, CODIGO_REQUISICAO_EDITA_NOTA);
             }
         });
     }
 
     private List<Nota> retornaTodasNotas() {
         NotaDAO dao = new NotaDAO();
-        for(int i = 0; i<15; i++){
+        for(int i = 0; i<10; i++){
             dao.insere(new Nota("Titulo " +(i+1), "Descrição "+(i+1)));
         }
         return dao.todos();
