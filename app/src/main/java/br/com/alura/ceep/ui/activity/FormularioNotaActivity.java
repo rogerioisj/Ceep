@@ -26,9 +26,9 @@ public class FormularioNotaActivity extends AppCompatActivity implements Constan
         setContentView(R.layout.activity_formulario_nota);
 
         Intent dadosRecebidos = getIntent();
-        if(dadosRecebidos.hasExtra(CHAVE_NOTA) && dadosRecebidos.hasExtra("posicao")){
+        if(dadosRecebidos.hasExtra(CHAVE_NOTA) && dadosRecebidos.hasExtra(CHAVE_POSICAO)){
             Nota notaRecebida = (Nota)dadosRecebidos.getSerializableExtra(CHAVE_NOTA);
-            posicaoRecebida = dadosRecebidos.getIntExtra("posicao", -1);
+            posicaoRecebida = dadosRecebidos.getIntExtra(CHAVE_POSICAO, VALOR_POSICAO_INVALIDO);
 
             TextView titulo = findViewById(R.id.formulario_nota_titulo);
             titulo.setText(notaRecebida.getTitulo());
@@ -57,7 +57,7 @@ public class FormularioNotaActivity extends AppCompatActivity implements Constan
     private void retornaNota(Nota nota) {
         Intent resultadoInsercao = new Intent();
         resultadoInsercao.putExtra(CHAVE_NOTA, nota);
-        resultadoInsercao.putExtra("posicao", posicaoRecebida);
+        resultadoInsercao.putExtra(CHAVE_POSICAO, posicaoRecebida);
         setResult(CODIGO_RESULTADO_NOTA_CRIADA, resultadoInsercao);
     }
 
