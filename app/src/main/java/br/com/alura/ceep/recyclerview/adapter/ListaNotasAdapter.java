@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -14,10 +13,12 @@ import java.util.List;
 
 import br.com.alura.ceep.R;
 import br.com.alura.ceep.model.Nota;
+import br.com.alura.ceep.recyclerview.adapter.listener.OnItemClickListener;
 
 public class ListaNotasAdapter extends RecyclerView.Adapter<ListaNotasAdapter.NotaViewHolder> {
     private Context context;
     private List<Nota> notas;
+    private OnItemClickListener onItemClickListener;
 
     public ListaNotasAdapter(Context context, List<Nota> notas) {
         this.context = context;
@@ -48,10 +49,15 @@ public class ListaNotasAdapter extends RecyclerView.Adapter<ListaNotasAdapter.No
         notifyDataSetChanged();
     }
 
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener){
+        this.onItemClickListener = onItemClickListener;
+    }
+
     class NotaViewHolder extends RecyclerView.ViewHolder {
 
         private final TextView titulo;
         private final TextView descricao;
+        private Nota nota;
 
         public NotaViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -60,12 +66,13 @@ public class ListaNotasAdapter extends RecyclerView.Adapter<ListaNotasAdapter.No
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(context, "Click realizado", Toast.LENGTH_LONG).show();
+                    onItemClickListener.onItemClick(nota);
                 }
             });
         }
 
         public void vincula(Nota nota) {
+            this.nota = nota;
             preencheCampo(nota);
         }
 
