@@ -1,16 +1,14 @@
 package br.com.alura.ceep.ui.activity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
-import java.io.Serializable;
 
 import br.com.alura.ceep.R;
 import br.com.alura.ceep.model.Nota;
@@ -28,7 +26,7 @@ public class FormularioNotaActivity extends AppCompatActivity implements Constan
         Intent dadosRecebidos = getIntent();
         if(dadosRecebidos.hasExtra(CHAVE_NOTA) && dadosRecebidos.hasExtra(CHAVE_POSICAO)){
             Nota notaRecebida = (Nota)dadosRecebidos.getSerializableExtra(CHAVE_NOTA);
-            posicaoRecebida = dadosRecebidos.getIntExtra(CHAVE_POSICAO, VALOR_POSICAO_INVALIDO);
+            posicaoRecebida = dadosRecebidos.getIntExtra(CHAVE_POSICAO, VALOR_POSICAO_INVALIDA);
 
             TextView titulo = findViewById(R.id.formulario_nota_titulo);
             titulo.setText(notaRecebida.getTitulo());
@@ -58,7 +56,7 @@ public class FormularioNotaActivity extends AppCompatActivity implements Constan
         Intent resultadoInsercao = new Intent();
         resultadoInsercao.putExtra(CHAVE_NOTA, nota);
         resultadoInsercao.putExtra(CHAVE_POSICAO, posicaoRecebida);
-        setResult(CODIGO_RESULTADO_NOTA_CRIADA, resultadoInsercao);
+        setResult(Activity.RESULT_OK, resultadoInsercao);
     }
 
     private Nota criaNota() {

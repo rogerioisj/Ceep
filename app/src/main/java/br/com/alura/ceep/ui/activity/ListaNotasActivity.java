@@ -1,5 +1,6 @@
 package br.com.alura.ceep.ui.activity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -19,9 +20,10 @@ import br.com.alura.ceep.recyclerview.adapter.ListaNotasAdapter;
 import br.com.alura.ceep.recyclerview.adapter.listener.OnItemClickListener;
 
 import static br.com.alura.ceep.ui.activity.ConstantesActivity.CHAVE_NOTA;
+import static br.com.alura.ceep.ui.activity.ConstantesActivity.CHAVE_POSICAO;
 import static br.com.alura.ceep.ui.activity.ConstantesActivity.CODIGO_REQUISICAO_EDITA_NOTA;
 import static br.com.alura.ceep.ui.activity.ConstantesActivity.CODIGO_REQUISICAO_INSERE_NOTA;
-import static br.com.alura.ceep.ui.activity.ConstantesActivity.CODIGO_RESULTADO_NOTA_CRIADA;
+import static br.com.alura.ceep.ui.activity.ConstantesActivity.VALOR_POSICAO_INVALIDA;
 
 public class ListaNotasActivity extends AppCompatActivity {
 
@@ -42,34 +44,60 @@ public class ListaNotasActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        verificaNotaDeFormulario(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
+        insereNota(requestCode, resultCode, data);
 
-        if(requestCode == CODIGO_REQUISICAO_EDITA_NOTA
-                && resultCode == CODIGO_RESULTADO_NOTA_CRIADA
-                && validaSerializableInsereNota(data)
-                && data.hasExtra("posicao")){
-            Nota notaRecebida = (Nota) data.getSerializableExtra(CHAVE_NOTA);
-            int posicaoRecebida = data.getIntExtra("posicao", -1);
-            new NotaDAO().altera(posicaoRecebida, notaRecebida);
-            adapter.altera(posicaoRecebida, notaRecebida);
+        editaNota(requestCode, resultCode, data);
+    }
+
+    private void editaNota(int requestCode, int resultCode, @Nullable Intent data) {
+        Nota notaRecebida;
+        int posicaoRecebida;
+        if(validacaoNotaEdicao(requestCode, resultCode, data)){
+            notaRecebida = (Nota) data.getSerializableExtra(CHAVE_NOTA);
+            posicaoRecebida = data.getIntExtra(CHAVE_POSICAO, VALOR_POSICAO_INVALIDA);
+            if (posicaoRecebida > VALOR_POSICAO_INVALIDA){
+                altera(notaRecebida, posicaoRecebida);
+            } else{
+                Toast.makeText(this, "Ocorreu um erro ao tentar editar a nota", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
-    private void verificaNotaDeFormulario(int requestCode, int resultCode, @Nullable Intent data) {
-        if (ehCodigoRequisicaoInsereNota(requestCode) && ehCodigoResultadoInsereNota(resultCode) && validaSerializableInsereNota(data)) {
-            Nota nota = (Nota) data.getSerializableExtra("nota");
+    private boolean validacaoNotaEdicao(int requestCode, int resultCode, @Nullable Intent data) {
+        return validaCodigoEditaNota(requestCode)
+                && ehCodigoResultadoInsereNota(resultCode)
+                && validaSerializableInsereNota(data)
+                && data.hasExtra(CHAVE_POSICAO);
+    }
+
+    private void altera(Nota notaRecebida, int posicaoRecebida) {
+        new NotaDAO().altera(posicaoRecebida, notaRecebida);
+        adapter.altera(posicaoRecebida, notaRecebida);
+    }
+
+    private boolean validaCodigoEditaNota(int requestCode) {
+        return requestCode == CODIGO_REQUISICAO_EDITA_NOTA;
+    }
+
+    private void insereNota(int requestCode, int resultCode, @Nullable Intent data) {
+        if (ehCodigoRequisicaoInsereNota(requestCode) && ehCodigoResultadoEditaNota(resultCode) && validaSerializableInsereNota(data)) {
+            Nota nota = (Nota) data.getSerializableExtra(CHAVE_NOTA);
             new NotaDAO().insere(nota);
             adapter.adiciona(nota);
         }
     }
 
+    private boolean ehCodigoResultadoEditaNota(int resultCode) {
+        return resultCode == Activity.RESULT_OK;
+    }
+
     private boolean validaSerializableInsereNota(@Nullable Intent data) {
-        return data.hasExtra("nota");
+        return data.hasExtra(CHAVE_NOTA);
     }
 
     private boolean ehCodigoResultadoInsereNota(int resultCode) {
-        return resultCode == CODIGO_RESULTADO_NOTA_CRIADA;
+        return resultCode == Activity.RESULT_OK;
     }
 
     private boolean ehCodigoRequisicaoInsereNota(int requestCode) {
@@ -106,7 +134,7 @@ public class ListaNotasActivity extends AppCompatActivity {
             public void onItemClick(Nota nota, int posicao) {
                 Intent abreFormularioComNota = new Intent(ListaNotasActivity.this, FormularioNotaActivity.class);
                 abreFormularioComNota.putExtra(CHAVE_NOTA, nota);
-                abreFormularioComNota.putExtra("posicao", posicao);
+                abreFormularioComNota.putExtra(CHAVE_POSICAO, posicao);
                 startActivityForResult(abreFormularioComNota, CODIGO_REQUISICAO_EDITA_NOTA);
             }
         });
