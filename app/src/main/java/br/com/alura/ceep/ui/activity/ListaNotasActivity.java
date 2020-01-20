@@ -53,20 +53,22 @@ public class ListaNotasActivity extends AppCompatActivity {
     private void editaNota(int requestCode, int resultCode, @Nullable Intent data) {
         Nota notaRecebida;
         int posicaoRecebida;
-        if(validacaoNotaEdicao(requestCode, resultCode, data)){
-            notaRecebida = (Nota) data.getSerializableExtra(CHAVE_NOTA);
-            posicaoRecebida = data.getIntExtra(CHAVE_POSICAO, VALOR_POSICAO_INVALIDA);
-            if (posicaoRecebida > VALOR_POSICAO_INVALIDA){
-                altera(notaRecebida, posicaoRecebida);
-            } else{
-                Toast.makeText(this, "Ocorreu um erro ao tentar editar a nota", Toast.LENGTH_SHORT).show();
+        if(validacaoNotaEdicao(requestCode, data)){
+            if (resultadoOK(resultCode)){
+                notaRecebida = (Nota) data.getSerializableExtra(CHAVE_NOTA);
+                posicaoRecebida = data.getIntExtra(CHAVE_POSICAO, VALOR_POSICAO_INVALIDA);
+                if (posicaoRecebida > VALOR_POSICAO_INVALIDA){
+                    altera(notaRecebida, posicaoRecebida);
+                } else{
+                    Toast.makeText(this, "Ocorreu um erro ao tentar editar a nota", Toast.LENGTH_SHORT).show();
+                }
             }
+
         }
     }
 
-    private boolean validacaoNotaEdicao(int requestCode, int resultCode, @Nullable Intent data) {
+    private boolean validacaoNotaEdicao(int requestCode, @Nullable Intent data) {
         return validaCodigoEditaNota(requestCode)
-                && ehCodigoResultadoInsereNota(resultCode)
                 && validaSerializableInsereNota(data)
                 && data.hasExtra(CHAVE_POSICAO);
     }
@@ -81,14 +83,21 @@ public class ListaNotasActivity extends AppCompatActivity {
     }
 
     private void insereNota(int requestCode, int resultCode, @Nullable Intent data) {
-        if (ehCodigoRequisicaoInsereNota(requestCode) && ehCodigoResultadoEditaNota(resultCode) && validaSerializableInsereNota(data)) {
-            Nota nota = (Nota) data.getSerializableExtra(CHAVE_NOTA);
-            new NotaDAO().insere(nota);
-            adapter.adiciona(nota);
+        if (ehCodigoRequisicaoInsereNota(requestCode) && validaSerializableInsereNota(data)) {
+            if(resultadoOK(resultCode))
+            {
+                Nota notaRecebida = (Nota) data.getSerializableExtra(CHAVE_NOTA);
+                adiona(notaRecebida);
+            }
         }
     }
 
-    private boolean ehCodigoResultadoEditaNota(int resultCode) {
+    private void adiona(Nota nota) {
+        new NotaDAO().insere(nota);
+        adapter.adiciona(nota);
+    }
+
+    private boolean resultadoOK(int resultCode) {
         return resultCode == Activity.RESULT_OK;
     }
 
@@ -96,9 +105,9 @@ public class ListaNotasActivity extends AppCompatActivity {
         return data.hasExtra(CHAVE_NOTA);
     }
 
-    private boolean ehCodigoResultadoInsereNota(int resultCode) {
+    /*private boolean ehCodigoResultadoInsereNota(int resultCode) {
         return resultCode == Activity.RESULT_OK;
-    }
+    }*/
 
     private boolean ehCodigoRequisicaoInsereNota(int requestCode) {
         return requestCode == CODIGO_REQUISICAO_INSERE_NOTA;
