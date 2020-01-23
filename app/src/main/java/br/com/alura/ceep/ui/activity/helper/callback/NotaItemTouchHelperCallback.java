@@ -9,7 +9,7 @@ import br.com.alura.ceep.recyclerview.adapter.ListaNotasAdapter;
 
 public class NotaItemTouchHelperCallback extends ItemTouchHelper.Callback {
 
-    ListaNotasAdapter adapter;
+    private final ListaNotasAdapter adapter;
 
     public NotaItemTouchHelperCallback(ListaNotasAdapter adapter) {
         this.adapter = adapter;
@@ -26,15 +26,23 @@ public class NotaItemTouchHelperCallback extends ItemTouchHelper.Callback {
     public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
         int posicaoInicial = viewHolder.getAdapterPosition();
         int posicaoFinal = target.getAdapterPosition();
+        trocaNota(posicaoInicial, posicaoFinal);
+        return true;
+    }
+
+    private void trocaNota(int posicaoInicial, int posicaoFinal) {
         new NotaDAO().troca(posicaoInicial, posicaoFinal);
         adapter.troca(posicaoInicial, posicaoFinal);
-        return true;
     }
 
     @Override
     public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+        removeNota(viewHolder);
+
+    }
+
+    private void removeNota(@NonNull RecyclerView.ViewHolder viewHolder) {
         new NotaDAO().remove(viewHolder.getAdapterPosition());
         adapter.remove(viewHolder.getAdapterPosition());
-
     }
 }
