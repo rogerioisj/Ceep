@@ -29,6 +29,9 @@ import static br.com.alura.ceep.ui.activity.ConstantesActivity.VALOR_POSICAO_INV
 
 public class ListaNotasActivity extends AppCompatActivity {
 
+    public static final String APP_BAR_NOTAS = "Notas";
+    public static final String APP_BAR_INSERE_NOTA = "Insere nota";
+    public static final String APP_BAR_ALTERA_NOTA = "Altera Nota";
     private ListaNotasAdapter adapter;
 
     @Override
@@ -37,12 +40,12 @@ public class ListaNotasActivity extends AppCompatActivity {
         setContentView(R.layout.activity_lista_notas);
         List<Nota> todasNotas = retornaTodasNotas();
 
+        setTitle(APP_BAR_NOTAS);
 
         configuraRecyclerView(todasNotas);
         configuraBotaoNovaNota();
 
     }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -104,7 +107,7 @@ public class ListaNotasActivity extends AppCompatActivity {
     }
 
     private boolean validaSerializableInsereNota(@Nullable Intent data) {
-        return data.hasExtra(CHAVE_NOTA);
+        return data != null && data.hasExtra(CHAVE_NOTA);
     }
 
     /*private boolean ehCodigoResultadoInsereNota(int resultCode) {

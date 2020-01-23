@@ -15,6 +15,8 @@ import br.com.alura.ceep.model.Nota;
 
 public class FormularioNotaActivity extends AppCompatActivity implements ConstantesActivity {
 
+    public static final String APP_BAR_INSERE_NOTA = "Insere Nota";
+    public static final String APP_BAR_EDITA_NOTA = "Edita Nota";
     private int posicaoRecebida;
 
 
@@ -23,8 +25,13 @@ public class FormularioNotaActivity extends AppCompatActivity implements Constan
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_formulario_nota);
 
+        setTitle(APP_BAR_INSERE_NOTA);
+
         Intent dadosRecebidos = getIntent();
         if(dadosRecebidos.hasExtra(CHAVE_NOTA) && dadosRecebidos.hasExtra(CHAVE_POSICAO)){
+
+            setTitle(APP_BAR_EDITA_NOTA);
+
             Nota notaRecebida = (Nota)dadosRecebidos.getSerializableExtra(CHAVE_NOTA);
             posicaoRecebida = dadosRecebidos.getIntExtra(CHAVE_POSICAO, VALOR_POSICAO_INVALIDA);
 
@@ -35,6 +42,7 @@ public class FormularioNotaActivity extends AppCompatActivity implements Constan
         }
 
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
