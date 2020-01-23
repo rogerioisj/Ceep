@@ -19,7 +19,7 @@ public class NotaItemTouchHelperCallback extends ItemTouchHelper.Callback {
     public int getMovementFlags(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
         int movimentoDeslize = ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT;
         int movimentoArraste = ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT | ItemTouchHelper.DOWN | ItemTouchHelper.UP;
-        return makeMovementFlags(movimentoArraste,movimentoDeslize);
+        return makeMovementFlags(movimentoArraste, movimentoDeslize);
     }
 
     @Override

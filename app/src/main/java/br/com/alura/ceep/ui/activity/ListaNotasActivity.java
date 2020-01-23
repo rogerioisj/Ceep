@@ -38,7 +38,9 @@ public class ListaNotasActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lista_notas);
-        List<Nota> todasNotas = retornaTodasNotas();
+        //List<Nota> todasNotas = retornaTodasNotas();
+
+        List<Nota> todasNotas = new NotaDAO().todos();
 
         setTitle(APP_BAR_NOTAS);
 
@@ -58,13 +60,13 @@ public class ListaNotasActivity extends AppCompatActivity {
     private void editaNota(int requestCode, int resultCode, @Nullable Intent data) {
         Nota notaRecebida;
         int posicaoRecebida;
-        if(validacaoNotaEdicao(requestCode, data)){
-            if (resultadoOK(resultCode)){
+        if (validacaoNotaEdicao(requestCode, data)) {
+            if (resultadoOK(resultCode)) {
                 notaRecebida = (Nota) data.getSerializableExtra(CHAVE_NOTA);
                 posicaoRecebida = data.getIntExtra(CHAVE_POSICAO, VALOR_POSICAO_INVALIDA);
-                if (posicaoRecebida > VALOR_POSICAO_INVALIDA){
+                if (posicaoRecebida > VALOR_POSICAO_INVALIDA) {
                     altera(notaRecebida, posicaoRecebida);
-                } else{
+                } else {
                     Toast.makeText(this, "Ocorreu um erro ao tentar editar a nota", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -89,15 +91,14 @@ public class ListaNotasActivity extends AppCompatActivity {
 
     private void insereNota(int requestCode, int resultCode, @Nullable Intent data) {
         if (ehCodigoRequisicaoInsereNota(requestCode) && validaSerializableInsereNota(data)) {
-            if(resultadoOK(resultCode))
-            {
+            if (resultadoOK(resultCode)) {
                 Nota notaRecebida = (Nota) data.getSerializableExtra(CHAVE_NOTA);
-                adiona(notaRecebida);
+                adiciona(notaRecebida);
             }
         }
     }
 
-    private void adiona(Nota nota) {
+    private void adiciona(Nota nota) {
         new NotaDAO().insere(nota);
         adapter.adiciona(nota);
     }
@@ -109,10 +110,6 @@ public class ListaNotasActivity extends AppCompatActivity {
     private boolean validaSerializableInsereNota(@Nullable Intent data) {
         return data != null && data.hasExtra(CHAVE_NOTA);
     }
-
-    /*private boolean ehCodigoResultadoInsereNota(int resultCode) {
-        return resultCode == Activity.RESULT_OK;
-    }*/
 
     private boolean ehCodigoRequisicaoInsereNota(int requestCode) {
         return requestCode == CODIGO_REQUISICAO_INSERE_NOTA;
@@ -162,8 +159,8 @@ public class ListaNotasActivity extends AppCompatActivity {
 
     private List<Nota> retornaTodasNotas() {
         NotaDAO dao = new NotaDAO();
-        for(int i = 0; i<10; i++){
-            dao.insere(new Nota("Titulo " +(i+1), "Descrição "+(i+1)));
+        for (int i = 0; i < 10; i++) {
+            dao.insere(new Nota("Titulo " + (i + 1), "Descrição " + (i + 1)));
         }
         return dao.todos();
 

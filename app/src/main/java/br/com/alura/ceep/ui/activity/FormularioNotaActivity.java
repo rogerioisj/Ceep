@@ -28,11 +28,11 @@ public class FormularioNotaActivity extends AppCompatActivity implements Constan
         setTitle(APP_BAR_INSERE_NOTA);
 
         Intent dadosRecebidos = getIntent();
-        if(dadosRecebidos.hasExtra(CHAVE_NOTA) && dadosRecebidos.hasExtra(CHAVE_POSICAO)){
+        if (dadosRecebidos.hasExtra(CHAVE_NOTA) && dadosRecebidos.hasExtra(CHAVE_POSICAO)) {
 
             setTitle(APP_BAR_EDITA_NOTA);
 
-            Nota notaRecebida = (Nota)dadosRecebidos.getSerializableExtra(CHAVE_NOTA);
+            Nota notaRecebida = (Nota) dadosRecebidos.getSerializableExtra(CHAVE_NOTA);
             posicaoRecebida = dadosRecebidos.getIntExtra(CHAVE_POSICAO, VALOR_POSICAO_INVALIDA);
 
             TextView titulo = findViewById(R.id.formulario_nota_titulo);
